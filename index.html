@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Impressão de Livros</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .header p {
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .result-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-unit {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .info-card {
+            background: #dbeafe;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .info-card h3 {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .info-card ul {
+            list-style: none;
+            font-size: 0.75rem;
+            color: #1e40af;
+        }
+        
+        .info-card li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .summary-card {
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+        }
+        
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        
+        .icon-sm {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i data-feather="calculator" class="icon"></i>
+                Calculadora de Impressão
+            </h1>
+            <p>Calcule o custo de impressão do seu livro</p>
+        </div>
+
+        <div class="calculator-grid">
+            <!-- Formulário -->
+            <div class="card">
+                <div class="card-header">
+                    <i data-feather="settings" class="icon-sm"></i>
+                    <h2>Configurações do Livro</h2>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="pages">Número de Páginas</label>
+                        <input type="number" id="pages" value="100" min="1">
+                    </div>
+                    <div>
+                        <label for="quantity">Quantidade (tiragem)</label>
+                        <input type="number" id="quantity" value="500" min="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="format">Formato</label>
+                    <select id="format">
+                        <option value="A4">A4 (21 x 29.7 cm)</option>
+                        <option value="A5">A5 (14.8 x 21 cm)</option>
+                        <option value="16x23">16x23 (16 x 23 cm)</option>
+                        <option value="14x21" selected>14x21 (14 x 21 cm)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="paperType">Tipo de Papel</label>
+                    <select id="paperType">
+                        <option value="offset75">Offset 75g/m²</option>
+                        <option value="polen80" selected>Pólen 80g/m²</option>
+                        <option value="offset90">Offset 90g/m²</option>
+                        <option value="coated115">Couchê 115g/m²</option>
+                        <option value="coated150">Couchê 150g/m²</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="coverType">Tipo de Capa</label>
+                    <select id="coverType">
+                        <option value="soft" selected>Capa Comum</option>
+                        <option value="laminated">Capa Plastificada</option>
+                        <option value="hard">Capa Dura</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="binding">Encadernação</label>
+                    <select id="binding">
+                        <option value="perfect" selected>Lombada Quadrada</option>
+                        <option value="saddle">Grampo a Cavalo</option>
+                        <option value="spiral">Espiral</option>
+                        <option value="sewn">Costurado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="colors">Impressão</label>
+                    <select id="colors">
+                        <option value="bw" selected>Preto e Branco</option>
+                        <option value="1color">1 Cor</option>
+                        <option value="2colors">2 Cores</option>
+                        <option value="fullcolor">Cores (4x4)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="finishing">Acabamento</label>
+                    <select id="finishing">
+                        <option value="none" selected>Sem Acabamento</option>
+                        <option value="uv">Verniz UV</option>
+                        <option value="matte">Verniz Fosco</option>
+                        <option value="embossing">Relevo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="card">
+                <div class="card-header">
+                    <i data-feather="dollar-sign" class="icon-sm"></i>
+                    <h2>Orçamento</h2>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-total">
+                        <span>Custo Total:</span>
+                        <span id="totalCost">R$ 0,00</span>
+                    </div>
+                    <div class="result-unit">
+                        <span>Custo por Unidade:</span>
+                        <span id="unitCost">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                        <i data-feather="info" style="width: 1.25rem; height: 1.25rem; color: #3b82f6; margin-top: 0.125rem;"></i>
+                        <div>
+                            <h3>Descontos por Quantidade:</h3>
+                            <ul>
+                                <li>• 30-49 unidades: 5% de desconto</li>
+                                <li>• 50-99 unidades: 8% de desconto</li>
+                                <li>• 100-199 unidades: 12% de desconto</li>
+                                <li>• 200-499 unidades: 15% de desconto</li>
+                                <li>• 500-999 unidades: 20% de desconto</li>
+                                <li>• 1000+ unidades: 25% de desconto</li>
+                                <li style="margin-top: 0.5rem; font-weight: 600;">* Preços incluem margem da gráfica</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <h3 style="color: #1f2937; margin-bottom: 0.5rem; font-size: 0.875rem;">Resumo do Projeto:</h3>
+                    <div class="summary-grid" id="summary">
+                        <div>Páginas: <span id="summaryPages">100</span></div>
+                        <div>Tiragem: <span id="summaryQuantity">500</span></div>
+                        <div>Formato: <span id="summaryFormat">14x21</span></div>
+                        <div>Papel: <span id="summaryPaper">Pólen 80g/m²</span></div>
+                        <div>Capa: <span id="summaryCover">Capa Comum</span></div>
+                        <div>Encadernação: <span id="summaryBinding">Lombada Quadrada</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>* Valores são estimativas baseadas em preços médios do mercado brasileiro.</p>
+            <p>Para orçamentos precisos, consulte uma gráfica especializada.</p>
+        </div>
+    </div>
+
+    <script>
+        // Dados da calculadora
+        const formats = {
+            'A4': { width: 21, height: 29.7, multiplier: 1.2 },
+            'A5': { width: 14.8, height: 21, multiplier: 1.0 },
+            '16x23': { width: 16, height: 23, multiplier: 1.1 },
+            '14x21': { width: 14, height: 21, multiplier: 0.9 }
+        };
+
+        const paperTypes = {
+            'offset75': { name: 'Offset 75g/m²', costPerSheet: 0.18 },
+            'polen80': { name: 'Pólen 80g/m²', costPerSheet: 0.20 },
+            'offset90': { name: 'Offset 90g/m²', costPerSheet: 0.24 },
+            'coated115': { name: 'Couchê 115g/m²', costPerSheet: 0.35 },
+            'coated150': { name: 'Couchê 150g/m²', costPerSheet: 0.48 }
+        };
+
+        const coverTypes = {
+            'soft': { name: 'Capa Comum', cost: 1.20 },
+            'laminated': { name: 'Capa Plastificada', cost: 2.50 },
+            'hard': { name: 'Capa Dura', cost: 6.80 }
+        };
+
+        const bindingTypes = {
+            'perfect': { name: 'Lombada Quadrada', costPerUnit: 1.50 },
+            'saddle': { name: 'Grampo a Cavalo', costPerUnit: 0.80 },
+            'spiral': { name: 'Espiral', costPerUnit: 2.50 },
+            'sewn': { name: 'Costurado', costPerUnit: 3.50 }
+        };
+
+        const colorOptions = {
+            'bw': { name: 'Preto e Branco', multiplier: 1.0 },
+            '1color': { name: '1 Cor', multiplier: 1.3 },
+            '2colors': { name: '2 Cores', multiplier: 1.6 },
+            'fullcolor': { name: 'Cores (4x4)', multiplier: 2.5 }
+        };
+
+        const finishingOptions = {
+            'none': { name: 'Sem Acabamento', cost: 0 },
+            'uv': { name: 'Verniz UV', cost: 1.80 },
+            'matte': { name: 'Verniz Fosco', cost: 1.50 },
+            'embossing': { name: 'Relevo', cost: 2.80 }
+        };
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function calculateCosts() {
+            const pages = parseInt(document.getElementById('pages').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const format = document.getElementById('format').value;
+            const paperType = document.getElementById('paperType').value;
+            const coverType = document.getElementById('coverType').value;
+            const binding = document.getElementById('binding').value;
+            const colors = document.getElementById('colors').value;
+            const finishing = document.getElementById('finishing').value;
+
+            // Cálculos
+            const sheetsNeeded = Math.ceil(pages / 4);
+            const paperCostPerUnit = sheetsNeeded * paperTypes[paperType].costPerSheet * formats[format].multiplier;
+            const totalPaperCost = paperCostPerUnit * quantity;
+
+            const baseImpression = 0.08;
+            const colorMultiplier = colorOptions[colors].multiplier;
+            const impressionCostPerUnit = pages * baseImpression * colorMultiplier;
+            const totalImpressionCost = impressionCostPerUnit * quantity;
+
+            const bindingCostPerUnit = bindingTypes[binding].costPerUnit;
+            const totalBindingCost = bindingCostPerUnit * quantity;
+
+            const coverCostPerUnit = coverTypes[coverType].cost;
+            const totalCoverCost = coverCostPerUnit * quantity;
+
+            const finishingCostPerUnit = finishingOptions[finishing].cost;
+            const totalFinishingCost = finishingCostPerUnit * quantity;
+
+            // Desconto por quantidade
+            let quantityDiscount = 1.0;
+            if (quantity >= 1000) quantityDiscount = 0.75;
+            else if (quantity >= 500) quantityDiscount = 0.80;
+            else if (quantity >= 200) quantityDiscount = 0.85;
+            else if (quantity >= 100) quantityDiscount = 0.88;
+            else if (quantity >= 50) quantityDiscount = 0.92;
+            else if (quantity >= 30) quantityDiscount = 0.95;
+
+            const markup = 1.25;
+            const subtotalCost = (totalPaperCost + totalImpressionCost + totalBindingCost + totalCoverCost + totalFinishingCost) * quantityDiscount;
+            const subtotal = subtotalCost * markup;
+            const unitCost = subtotal / quantity;
+
+            // Atualizar interface
+            document.getElementById('totalCost').textContent = formatCurrency(subtotal);
+            document.getElementById('unitCost').textContent = formatCurrency(unitCost);
+
+            // Atualizar resumo
+            document.getElementById('summaryPages').textContent = pages;
+            document.getElementById('summaryQuantity').textContent = quantity;
+            document.getElementById('summaryFormat').textContent = format;
+            document.getElementById('summaryPaper').textContent = paperTypes[paperType].name;
+            document.getElementById('summaryCover').textContent = coverTypes[coverType].name;
+            document.getElementById('summaryBinding').textContent = bindingTypes[binding].name;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar ícones
+            feather.replace();
+            
+            // Calcular custos iniciais
+            calculateCosts();
+            
+            // Adicionar listeners para todos os campos
+            const inputs = ['pages', 'quantity', 'format', 'paperType', 'coverType', 'binding', 'colors', 'finishing'];
+            inputs.forEach(id => {
+                document.getElementById(id).addEventListener('change', calculateCosts);
+                document.getElementById(id).addEventListener('input', calculateCosts);
+            });
+        });
+    </script>
+</body>
+</html>
